@@ -9,18 +9,32 @@ class App extends Component {
       chatMessages: [],
       currentUser: 'Anonymous'
     }
-    this.newMessage = this.newMessage.bind(this);
+    this.newMessages = this.newMessages.bind(this);
     this.shiftUser = this.shiftUser.bind(this);
   }
 
-  newMessage(text, user, type="message"){
-    const id = this.state.chatMessages.length + 1;
-    console.log(text, user, type)
-    let new_message = {id, text, type, user};
-    let new_state = this.state.chatMessages.concat([new_message]);
-    console.log( new_state)
-    this.setState({chatMessages:new_state})
-    console.log("chat messages", this.state.chatMessages);
+  // newMessage(text, user, type="message"){
+  //   const id = this.state.chatMessages.length + 1;
+  //   console.log(text, user, type)
+  //   let new_message = {id, text, type, user};
+  //   let new_state = this.state.chatMessages.concat([new_message]);
+  //   console.log( new_state)
+  //   this.setState({chatMessages:new_state})
+  //   console.log("chat messages", this.state.chatMessages);
+  // }
+
+  newMessages(messages_list){
+    let message_list = [];
+    for (let i=0; i<messages_list.length; i+= 1){
+      let message = messages_list[i];
+      let id = this.state.chatMessages.length + 1 + i;
+      let new_message = {id:id, text:message.text, type:message.type, user:message.user};
+      message_list.push(new_message)
+    }
+    console.log(message_list);
+    let new_state = this.state.chatMessages.concat(message_list);
+    this.setState({chatMessages: new_state});
+    console.log(this.state.chatMessages);
   }
 
   shiftUser(username){
@@ -41,7 +55,7 @@ class App extends Component {
         </div>
         <footer>
           <ChatBar
-            newMessage = {this.newMessage}
+            newMessages = {this.newMessages}
             currentUser = {this.state.currentUser}
             shiftUser = {this.shiftUser}
           />
