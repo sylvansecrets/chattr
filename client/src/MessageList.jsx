@@ -6,10 +6,16 @@ class MessageList extends React.Component {
     return (
       <div>
         <p> Placeholder message </p>
-        <Message />
+        <Message
+          chatMessages = {this.props.chatMessages}
+        />
       </div>
       )
   }
+}
+
+MessageList.defaultProps = {
+  chatMessages: []
 }
 
 export default MessageList;
