@@ -6,7 +6,7 @@ class ChatBar extends React.Component {
     this.submitHandler = this.submitHandler.bind(this);
   }
   submitHandler(e){
-    console.log("I am here");
+    e.preventDefault();
     this.props.newMessage(this.messageInput.value);
     this.messageInput.value = '';
   }
@@ -14,7 +14,9 @@ class ChatBar extends React.Component {
     return (
       <div id='entry_bar'>
         <form onSubmit = {this.submitHandler}>
+          <input ref={el => this.nameInput = el} />
           <input ref={el => this.messageInput = el} />
+          <input type='submit' />
         </form>
       </div>
       )
