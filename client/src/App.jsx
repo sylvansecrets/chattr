@@ -20,7 +20,7 @@ class App extends Component {
     let new_state = this.state.chatMessages.concat([new_message]);
     console.log( new_state)
     this.setState({chatMessages:new_state})
-    console.log("chat messages", this.state);
+    console.log("chat messages", this.state.chatMessages);
   }
 
   shiftUser(username){
