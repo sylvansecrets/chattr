@@ -13,12 +13,15 @@ class App extends Component {
 
   newMessage(text, type="message"){
     const id = this.state.chatMessages.length + 1;
-    this.setState = this.state.chatMessages.concat([{
-      id: id,
-      text: text,
-      type: type
-    }])
-    console.log(this.state);
+    this.setState({
+      chatMessages:
+        this.state.chatMessages.concat([{
+          id: id,
+          text: text,
+          type: type
+        }])
+      })
+    console.log("chat messages", this.state.chatMessages);
   }
   render() {
     return (
@@ -26,7 +29,9 @@ class App extends Component {
         <div>
           <h1> Placeholder text </h1>
         </div>
-        <MessageList />
+        <MessageList
+          chatMessages = {this.state.chatMessages}
+        />
         <ChatBar
           newMessage = {this.newMessage}
         />
