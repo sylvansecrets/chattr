@@ -27,22 +27,26 @@ class App extends Component {
   // }
 
   newMessages(messages_list, from_server=false){
-    let message_list = [];
+    let message_list = {};
     for (let i=0; i<messages_list.length; i+= 1){
       let message = messages_list[i];
       if (this.uuidCheck(message.uuid)){
-        console.log('Confirmed to have reached server')
+        console.log('Confirmed to have reached server');
         break;
       } else {
         let id = this.state.chatMessages.length + 1 + i;
         let uid = uuid.v4();
-        let new_message = {id:id, text:message.text, type:message.type, user:message.user, uuid: uid};
-        message_list.push(new_message)
+        let new_message = {id:id, text:message.text, type:message.type, user:message.user};
+        message_list[uid] = new_message;
       }
+      console.log("state addition", JSON.stringify(message_list))
     }
-    let new_state = this.state.chatMessages.concat(message_list);
+    // let new_state = this.state.chatMessages.concat(message_list);
+    let new_state = Object.assign({}, this.state.chatMessages, message_list)
     this.setState({chatMessages: new_state});
+    console.log('outgoing data', new_state)
     !from_server ? this.webSocket.send(JSON.stringify(new_state)) : {};
+    console.log(this.state.chatMessages)
   }
 
   shiftUser(username){
@@ -53,11 +57,7 @@ class App extends Component {
 
   // checks if a uid already exists inside this.state
   uuidCheck(uid){
-    let uids = []
-    for (let message of this.state.chatMessages){
-      uids.push(message.uuid)
-    }
-    return uids.indexOf(uid) != -1
+    return Object.keys(this.state.chatMessages).indexOf(uid) != -1
   }
 
 
@@ -69,9 +69,10 @@ class App extends Component {
 
     this.webSocket.onmessage = (event) => {
       let incoming_data = JSON.parse(event.data)
-      console.log(incoming_data);
+      console.log("incoming data", event.data);
       switch (incoming_data.socket_type){
         case 'message':
+          console.log("add message", incoming_data.content)
           this.newMessages(JSON.parse(incoming_data.content), true);
           break;
         case 'user_count':
@@ -83,6 +84,7 @@ class App extends Component {
   }
 
   render() {
+    console.log("chatMessages", JSON.stringify(this.state.chatMessages));
     return (
       <div id='container'>
         <nav>
