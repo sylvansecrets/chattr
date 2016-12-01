@@ -47,7 +47,7 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (message) => {
     message = JSON.parse(message);
-    console.log('before adding color', message);
+    // console.log('before adding color', message);
 
     wss.clients.forEach((clientSocket) => {
       for (uid in message){
@@ -55,8 +55,9 @@ wss.on('connection', (ws) => {
         console.log('individual', message[uid])
         message[uid]['color'] = ws.color
       }
-      console.log('after adding color', message)
-      clientSocket.send(JSON.stringify(message));
+      // console.log('after adding color', message)
+      let outgoing = {socket_type:'message', content:message}
+      clientSocket.send(JSON.stringify(outgoing));
     })
 
 

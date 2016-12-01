@@ -1,5 +1,6 @@
 import React from 'react';
 const changeString = ' changed their name to '
+const uuid = require('uuid');
 
 class ChatBar extends React.Component {
   constructor(props) {
@@ -8,18 +9,15 @@ class ChatBar extends React.Component {
   }
   submitHandler(e){
     e.preventDefault();
-    let message_list = [];
+    let message_obj = {};
     if (this.nameInput.value !== this.props.currentUser){
       console.log("Change user message")
-      message_list.push({text: this.props.currentUser+changeString+this.nameInput.value, type:'change_user'})
-      // this.props.newMessage(this.props.currentUser+changeString+this.nameInput.value, null, "change_user");
+      message_obj[uuid.v4()] = ({text: this.props.currentUser+changeString+this.nameInput.value, type:'change_user'})
       this.props.shiftUser(this.nameInput.value);
-    } else {
-      // this.props.newMessage(this.messageInput.value, this.nameInput.value);
     }
-    message_list.push({text:this.messageInput.value, user:this.nameInput.value, type:'message'});
+    message_obj[uuid.v4()] = ({text:this.messageInput.value, user:this.nameInput.value, type:'message'});
 
-    message_list !== [] ? this.props.newMessages(message_list) : {};
+    message_obj !== {} ? this.props.newMessages(message_obj) : {};
 
 
 
