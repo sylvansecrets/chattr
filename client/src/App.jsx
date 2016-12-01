@@ -74,6 +74,8 @@ class App extends Component {
         case 'message':
           this.newMessages(JSON.parse(incoming_data.content), true);
           break;
+        case 'user_count':
+          this.setState({user_count: incoming_data.content})
       }
 
     }
@@ -85,6 +87,7 @@ class App extends Component {
       <div id='container'>
         <nav>
           <h1> Placeholder text </h1>
+          <h3> Users Online {this.state.user_count} </h3>
         </nav>
         <div className='message_list'>
           <MessageList className='message_list'
