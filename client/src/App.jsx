@@ -68,8 +68,14 @@ class App extends Component {
     }
 
     this.webSocket.onmessage = (event) => {
-      console.log(event.data);
-      this.newMessages(JSON.parse(event.data), true)
+      let incoming_data = JSON.parse(event.data)
+      console.log(incoming_data);
+      switch (incoming_data.socket_type){
+        case 'message':
+          this.newMessages(JSON.parse(incoming_data.content), true);
+          break;
+      }
+
     }
 
   }
