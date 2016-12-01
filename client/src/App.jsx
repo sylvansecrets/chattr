@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+require('uuid')
 
 class App extends Component {
   constructor(props){
@@ -24,19 +25,20 @@ class App extends Component {
   //   console.log("chat messages", this.state.chatMessages);
   // }
 
-  newMessages(messages_list){
+  newMessages(messages_list, from_server=false){
     let message_list = [];
     for (let i=0; i<messages_list.length; i+= 1){
       let message = messages_list[i];
       let id = this.state.chatMessages.length + 1 + i;
-      let new_message = {id:id, text:message.text, type:message.type, user:message.user};
+      let uid = uuid.v4();
+      let new_message = {id:id, text:message.text, type:message.type, user:message.user, uuid: uid};
       message_list.push(new_message)
     }
     console.log(message_list);
     let new_state = this.state.chatMessages.concat(message_list);
     this.setState({chatMessages: new_state});
     console.log(this.state.chatMessages);
-    this.webSocket.send(JSON.stringify(new_state));
+    !from_server ? this.webSocket.send(JSON.stringify(new_state)) : {};
   }
 
   shiftUser(username){
@@ -51,13 +53,10 @@ class App extends Component {
     this.webSocket.onopen = function(event){
       console.log('Established connection to websocket')
     }
-    // this.webSocket.on('connection', (ws) => {
-    //   ws.on('message', (message) => {
-    //     console.log("received", message)
-    //   })
-    // })
-    this.webSocket.onmessage = function(event){
+
+    this.webSocket.onmessage = (event) => {
       console.log(event.data);
+      this.newMessages(JSON.parse(event.data), true)
     }
 
   }
