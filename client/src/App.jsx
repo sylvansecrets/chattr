@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
-require('uuid')
+const uuid = require('uuid')
 
 class App extends Component {
   constructor(props){
@@ -13,6 +13,7 @@ class App extends Component {
     this.newMessages = this.newMessages.bind(this);
     this.shiftUser = this.shiftUser.bind(this);
     this.webSocket = new WebSocket ("ws://localhost:4000/");
+    this.uuidCheck = this.uuidCheck.bind(this);
   }
 
   // newMessage(text, user, type="message"){
@@ -29,15 +30,18 @@ class App extends Component {
     let message_list = [];
     for (let i=0; i<messages_list.length; i+= 1){
       let message = messages_list[i];
-      let id = this.state.chatMessages.length + 1 + i;
-      let uid = uuid.v4();
-      let new_message = {id:id, text:message.text, type:message.type, user:message.user, uuid: uid};
-      message_list.push(new_message)
+      if (this.uuidCheck(message.uuid)){
+        console.log('Confirmed to have reached server')
+        break;
+      } else {
+        let id = this.state.chatMessages.length + 1 + i;
+        let uid = uuid.v4();
+        let new_message = {id:id, text:message.text, type:message.type, user:message.user, uuid: uid};
+        message_list.push(new_message)
+      }
     }
-    console.log(message_list);
     let new_state = this.state.chatMessages.concat(message_list);
     this.setState({chatMessages: new_state});
-    console.log(this.state.chatMessages);
     !from_server ? this.webSocket.send(JSON.stringify(new_state)) : {};
   }
 
@@ -45,6 +49,15 @@ class App extends Component {
     this.setState({
       currentUser: username
     })
+  }
+
+  // checks if a uid already exists inside this.state
+  uuidCheck(uid){
+    let uids = []
+    for (let message of this.state.chatMessages){
+      uids.push(message.uuid)
+    }
+    return uids.indexOf(uid) != -1
   }
 
 
