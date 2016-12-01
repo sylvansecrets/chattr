@@ -26,7 +26,7 @@ wss.on('connection', (ws) => {
 
     wss.clients.forEach((clientSocket) => {
       console.log("ready to send", message)
-      clientSocket.send(message)
+      clientSocket.send(JSON.stringify({socket_type:'message', content:message}));
     })
 
   })
