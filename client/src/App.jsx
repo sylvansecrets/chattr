@@ -11,6 +11,7 @@ class App extends Component {
     }
     this.newMessages = this.newMessages.bind(this);
     this.shiftUser = this.shiftUser.bind(this);
+    this.webSocket = new WebSocket ("ws://localhost:4000/");
   }
 
   // newMessage(text, user, type="message"){
@@ -35,6 +36,7 @@ class App extends Component {
     let new_state = this.state.chatMessages.concat(message_list);
     this.setState({chatMessages: new_state});
     console.log(this.state.chatMessages);
+    this.webSocket.send(JSON.stringify(new_state));
   }
 
   shiftUser(username){
@@ -42,6 +44,24 @@ class App extends Component {
       currentUser: username
     })
   }
+
+
+
+  componentDidMount(){
+    this.webSocket.onopen = function(event){
+      console.log('Established connection to websocket')
+    }
+    // this.webSocket.on('connection', (ws) => {
+    //   ws.on('message', (message) => {
+    //     console.log("received", message)
+    //   })
+    // })
+    this.webSocket.onmessage = function(event){
+      console.log(event.data);
+    }
+
+  }
+
   render() {
     return (
       <div id='container'>
